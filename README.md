@@ -20,6 +20,20 @@ This is not a basic to-do list. It is a multi-user task management system where:
 
 ---
 
+### Environment Variables
+
+The following environment variables can be set for production:
+
+| Variable | Description | Default |
+|---|---|---|
+| JWT_SECRET | Secret key for signing JWT tokens | hardcoded default (change in prod) |
+| JWT_EXPIRATION | Access token expiry in ms | 3600000 (1 hour) |
+| JWT_REFRESH_EXPIRATION | Refresh token expiry in ms | 604800000 (7 days) |
+| DB_PASSWORD | MySQL database password | configured in properties |
+
+For local development the defaults in application.properties are used automatically.
+For production deployment set these as system environment variables or use a secrets manager.
+
 ## Tech Stack
 
 | Layer | Technology |
