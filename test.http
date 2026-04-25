@@ -1,0 +1,699 @@
+### =============================================
+### AUTH TESTS
+### =============================================
+
+### =============================================
+### STEP 1 — Run these first every time
+### =============================================
+
+### Get USER token — copy response token to eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YTIwMjVAdGVzdC5jb20iLCJpYXQiOjE3NzY5Mzk5MTMsImV4cCI6MTc3NzAyNjMxM30.C0e4-OLzSHVygu3TaXWnjfij1UhIHXuSRAvfFZTB8mA
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "priya2025@test.com",
+  "password": "Priya123!"
+}
+
+###
+
+### Get ADMIN token — copy response token to eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc3NjkzOTk3MywiZXhwIjoxNzc3MDI2MzczfQ.UrO3XLnTimyhIj0QgdDpttY5zrV4kDZPUZHZnLCSqRQ
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "Admin123!"
+}
+
+
+### 1. Register a new user (should work — 201)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Priya Sharma",
+  "email": "priya@test.com",
+  "password": "priya123"
+}
+
+### Login as regular USER
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "priya@test.com",
+  "password": "priya123"
+}
+
+### Register fresh user
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Priya Sharma",
+  "email": "priya_new@test.com",
+  "password": "Priya123!"
+}
+###
+
+### 2. Try registering same email again (should get 409 Conflict)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Priya Sharma",
+  "email": "priya@test.com",
+  "password": "priya123"
+}
+
+###
+
+### 3. Register with blank name (should get 400 with field error)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "",
+  "email": "test@test.com",
+  "password": "test123"
+}
+
+###
+
+### 4. Register with invalid email format (should get 400)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "notanemail",
+  "password": "test123"
+}
+
+###
+
+### 5. Register with short password (should get 400)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test2@test.com",
+  "password": "abc"
+}
+
+###
+
+### 6. Login successfully — COPY THE TOKEN FROM THIS RESPONSE
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "priya@test.com",
+  "password": "priya123"
+}
+
+###
+
+### 7. Login with wrong password (should get 401)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "priya@test.com",
+  "password": "wrongpassword"
+}
+
+###
+
+### 8. Login with email that does not exist (should get 404)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "nobody@test.com",
+  "password": "test123"
+}
+
+### Register fresh user
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Priya Sharma",
+  "email": "priya2025@test.com",
+  "password": "Priya123!"
+}
+
+### Login
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "priya2025@test.com",
+  "password": "Priya123!"
+}
+
+### Register a dedicated admin user
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Admin User",
+  "email": "admin@test.com",
+  "password": "Admin123!"
+}
+
+### Login as regular USER — copy this token as eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YTIwMjVAdGVzdC5jb20iLCJpYXQiOjE3NzY5Mzk5MTMsImV4cCI6MTc3NzAyNjMxM30.C0e4-OLzSHVygu3TaXWnjfij1UhIHXuSRAvfFZTB8mA
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "priya@test.com",
+  "password": "Priya123!"
+}
+
+###
+
+### Login as ADMIN — copy this token as eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc3NjkzOTk3MywiZXhwIjoxNzc3MDI2MzczfQ.UrO3XLnTimyhIj0QgdDpttY5zrV4kDZPUZHZnLCSqRQ
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "Admin123!"
+}
+
+###
+
+### =============================================
+### TASK TESTS — replace eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4 below
+### =============================================
+
+### 9. Create a task successfully (should get 200 with task JSON)
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4
+
+{
+  "title": "Build the login page",
+  "description": "Create a responsive login form with validation",
+  "priority": "HIGH",
+  "deadline": "2025-06-30"
+}
+
+###
+
+### 10. Create another task to have data for later tests
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4
+
+{
+  "title": "Write unit tests",
+  "description": "Cover all service layer methods",
+  "priority": "MEDIUM",
+  "deadline": "2025-07-15"
+}
+
+###
+
+### 11. Create task with no title (should get 400 with field error)
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4
+
+{
+  "title": "",
+  "description": "This should fail",
+  "priority": "LOW"
+}
+
+###
+
+### 12. Get my tasks (should return tasks you just created)
+GET http://localhost:8080/api/tasks/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4
+
+###
+
+### 13. Update task status to IN_PROGRESS (use id 1 — change if different)
+PATCH http://localhost:8080/api/tasks/1/status?status=IN_PROGRESS
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4
+
+###
+
+### 14. Update task status to COMPLETED
+PATCH http://localhost:8080/api/tasks/1/status?status=COMPLETED
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4
+
+###
+
+### 15. Try invalid status value (should get 400 with clear message)
+PATCH http://localhost:8080/api/tasks/1/status?status=DONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4
+
+###
+
+### 16. Try to get a task that does not exist (should get 404)
+GET http://localhost:8080/api/tasks/9999
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4
+
+###
+
+### 17. Update full task details (use id 2)
+PUT http://localhost:8080/api/tasks/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4
+
+{
+  "title": "Write unit tests — updated",
+  "description": "Cover service and controller layers",
+  "priority": "HIGH",
+  "deadline": "2025-07-20"
+}
+
+###
+
+### 18. Try accessing tasks without token (should get 403)
+GET http://localhost:8080/api/tasks/my
+
+###
+
+### =============================================
+### ADMIN TESTS — need ADMIN token
+### =============================================
+
+### STEP BEFORE THESE TESTS:
+### Run this SQL in MySQL to make priya an admin:
+### UPDATE users SET role = 'ADMIN' WHERE email = 'priya@test.com';
+### Then login again with request 6 to get a fresh ADMIN token
+### Replace  with that new token
+
+###
+
+### 19. Get all tasks as admin (should work — 200)
+GET http://localhost:8080/api/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODc2OSwiZXhwIjoxNzc1MTk1MTY5fQ.N5SiD_xCeVChlCj9u29mljR4WsYzoNKjgwqn9rL-u9Y
+###
+
+### 20. Get all tasks filtered by status PENDING
+GET http://localhost:8080/api/tasks?status=PENDING
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODc2OSwiZXhwIjoxNzc1MTk1MTY5fQ.N5SiD_xCeVChlCj9u29mljR4WsYzoNKjgwqn9rL-u9Y
+###
+
+### 21. Get all tasks filtered by status COMPLETED
+GET http://localhost:8080/api/tasks?status=COMPLETED
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODc2OSwiZXhwIjoxNzc1MTk1MTY5fQ.N5SiD_xCeVChlCj9u29mljR4WsYzoNKjgwqn9rL-u9Y
+
+###
+
+### 22. Get all users (admin only — should work)
+GET http://localhost:8080/api/admin/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODc2OSwiZXhwIjoxNzc1MTk1MTY5fQ.N5SiD_xCeVChlCj9u29mljR4WsYzoNKjgwqn9rL-u9Y
+
+###
+
+### 23. Get audit logs (should show all actions taken so far)
+GET http://localhost:8080/api/admin/audit-logs
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODc2OSwiZXhwIjoxNzc1MTk1MTY5fQ.N5SiD_xCeVChlCj9u29mljR4WsYzoNKjgwqn9rL-u9Y
+
+###
+
+### 24. Try GET all tasks with regular USER token (should get 403)
+GET http://localhost:8080/api/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4
+
+###
+
+### 25. Try GET admin users with regular USER token (should get 403)
+GET http://localhost:8080/api/admin/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODI3MywiZXhwIjoxNzc1MTk0NjczfQ.I_IM811gCNWuolv3OscvOoVbNCUGzjtdbTYS5HY-6e4
+
+###
+
+### 26. Delete task with id 2 as admin
+DELETE http://localhost:8080/api/tasks/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODc2OSwiZXhwIjoxNzc1MTk1MTY5fQ.N5SiD_xCeVChlCj9u29mljR4WsYzoNKjgwqn9rL-u9Y
+
+###
+
+### 27. Try to delete same task again (should get 404)
+DELETE http://localhost:8080/api/tasks/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODc2OSwiZXhwIjoxNzc1MTk1MTY5fQ.N5SiD_xCeVChlCj9u29mljR4WsYzoNKjgwqn9rL-u9Y
+
+###
+
+### 28. Change a user's role to ADMIN (replace 2 with actual user id)
+PATCH http://localhost:8080/api/admin/users/2/role?role=ADMIN
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODc2OSwiZXhwIjoxNzc1MTk1MTY5fQ.N5SiD_xCeVChlCj9u29mljR4WsYzoNKjgwqn9rL-u9Y
+
+###
+
+### 29. Try to delete a user that does not exist (should get 404)
+DELETE http://localhost:8080/api/admin/users/9999
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTEwODc2OSwiZXhwIjoxNzc1MTk1MTY5fQ.N5SiD_xCeVChlCj9u29mljR4WsYzoNKjgwqn9rL-u9Y
+
+
+
+### =============================================
+### WEEK 2 — PASSWORD STRENGTH TESTS
+### =============================================
+
+### 30. Password with no uppercase (should get 400)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test3@test.com",
+  "password": "priya123!"
+}
+
+###
+
+### 31. Password with no number (should get 400)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test3@test.com",
+  "password": "Priyatest!"
+}
+
+###
+
+### 32. Password with no special character (should get 400)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test3@test.com",
+  "password": "Priya1234"
+}
+
+###
+
+### 33. Strong password — should register successfully (201)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test3@test.com",
+  "password": "Priya123!"
+}
+
+###
+
+### 34. Name with numbers (should get 400)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Priya123",
+  "email": "test4@test.com",
+  "password": "Priya123!"
+}
+
+###
+
+### 35. Name too short — one character (should get 400)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "P",
+  "email": "test4@test.com",
+  "password": "Priya123!"
+}
+
+###
+
+### =============================================
+### WEEK 2 — TASK SANITIZATION TESTS
+### =============================================
+
+### 36. Task with deadline in the past (should get 400)
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTIxOTQ0OSwiZXhwIjoxNzc1MzA1ODQ5fQ.2T59KDTwh5-FWJedP07KQ413U5ZHpw187GavQkqy2rw
+
+{
+  "title": "Past deadline task",
+  "description": "This should fail",
+  "priority": "HIGH",
+  "deadline": "2020-01-01"
+}
+
+###
+
+### 37. Task with invalid priority (should get 400)
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTIxOTQ0OSwiZXhwIjoxNzc1MzA1ODQ5fQ.2T59KDTwh5-FWJedP07KQ413U5ZHpw187GavQkqy2rw
+
+{
+  "title": "Invalid priority task",
+  "description": "This should fail",
+  "priority": "URGENT"
+}
+
+###
+
+### 38. Task title too long — over 100 characters (should get 400)
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTIxOTQ0OSwiZXhwIjoxNzc1MzA1ODQ5fQ.2T59KDTwh5-FWJedP07KQ413U5ZHpw187GavQkqy2rw
+
+{
+  "title": "This is a very long title that goes well beyond one hundred characters and should definitely be rejected by the validation system we just built",
+  "description": "This should fail",
+  "priority": "HIGH"
+}
+
+###
+
+### 39. Valid task with all fields correct (should get 200)
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTIxOTQ0OSwiZXhwIjoxNzc1MzA1ODQ5fQ.2T59KDTwh5-FWJedP07KQ413U5ZHpw187GavQkqy2rw
+
+{
+  "title": "Valid task with strong validation",
+  "description": "This should pass all validation rules",
+  "priority": "HIGH",
+  "deadline": "2025-12-31"
+}
+
+### =============================================
+### WEEK 4 — PAGINATION TESTS
+### =============================================
+
+### 40. Get my tasks — first page, 2 per page
+GET http://localhost:8080/api/tasks/my?page=0&size=2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTQ2NTQ0OCwiZXhwIjoxNzc1NTUxODQ4fQ._vi3ri6jQTNBgIUSSqZqd_dGx4N_HaOAl1S-9TXiTjI
+
+###
+
+### 41. Get my tasks — second page
+GET http://localhost:8080/api/tasks/my?page=1&size=2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTQ2NTQ0OCwiZXhwIjoxNzc1NTUxODQ4fQ._vi3ri6jQTNBgIUSSqZqd_dGx4N_HaOAl1S-9TXiTjI
+
+###
+
+### 42. Get my tasks sorted by deadline ascending
+GET http://localhost:8080/api/tasks/my?page=0&size=10&sortBy=deadline&direction=asc
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTQ2NTQ0OCwiZXhwIjoxNzc1NTUxODQ4fQ._vi3ri6jQTNBgIUSSqZqd_dGx4N_HaOAl1S-9TXiTjI
+
+###
+
+### 43. Get my tasks sorted by priority descending
+GET http://localhost:8080/api/tasks/my?page=0&size=10&sortBy=priority&direction=desc
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTQ2NTQ0OCwiZXhwIjoxNzc1NTUxODQ4fQ._vi3ri6jQTNBgIUSSqZqd_dGx4N_HaOAl1S-9TXiTjI
+
+###
+
+### 44. Get all tasks paginated — admin only
+GET http://localhost:8080/api/tasks?page=0&size=5
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTQ2NTU3NywiZXhwIjoxNzc1NTUxOTc3fQ.TtQ8DWLF-qZJB448KWyYTflxu0DhL_8CwnBrs0XdHzY
+
+###
+
+### 45. Get all PENDING tasks paginated
+GET http://localhost:8080/api/tasks?status=PENDING&page=0&size=5
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTQ2NTU3NywiZXhwIjoxNzc1NTUxOTc3fQ.TtQ8DWLF-qZJB448KWyYTflxu0DhL_8CwnBrs0XdHzY
+
+###
+
+### 46. Get all tasks sorted by title
+GET http://localhost:8080/api/tasks?page=0&size=10&sortBy=title&direction=asc
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YUB0ZXN0LmNvbSIsImlhdCI6MTc3NTQ2NTU3NywiZXhwIjoxNzc1NTUxOTc3fQ.TtQ8DWLF-qZJB448KWyYTflxu0DhL_8CwnBrs0XdHzY
+
+
+### =============================================
+### WEEK 5 — BUSINESS LOGIC TESTS
+### =============================================
+
+### 47. Create an overdue task (deadline in past — but wait,
+### your validation prevents past deadlines now.
+### So first disable @FutureOrPresent temporarily to create one,
+### or update an existing task's deadline directly in MySQL:
+### UPDATE tasks SET deadline = '2024-01-01' WHERE id = 1;
+### Then test:
+
+### 48. Get my overdue tasks
+GET http://localhost:8080/api/tasks/my/overdue
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YTIwMjVAdGVzdC5jb20iLCJpYXQiOjE3NzY5MzkwOTUsImV4cCI6MTc3NzAyNTQ5NX0.A0NwkhJwfYwZFc9A-ximMTCod1xmiHSfpxOafYsXCco
+
+###
+
+### 49. Get all overdue tasks — admin only
+GET http://localhost:8080/api/tasks/overdue?page=0&size=10
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc3NjkzODc3NywiZXhwIjoxNzc3MDI1MTc3fQ.aP50d3xZ1otUV5LxVOQxOPYQihoIAHcDtevGT-ieI34
+
+###
+
+### 50. Get task statistics
+GET http://localhost:8080/api/tasks/stats
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc3NjkzODc3NywiZXhwIjoxNzc3MDI1MTc3fQ.aP50d3xZ1otUV5LxVOQxOPYQihoIAHcDtevGT-ieI34
+
+###
+
+### 51. Search all tasks by keyword
+GET http://localhost:8080/api/tasks/search?keyword=backend&page=0&size=10
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc3NjkzODc3NywiZXhwIjoxNzc3MDI1MTc3fQ.aP50d3xZ1otUV5LxVOQxOPYQihoIAHcDtevGT-ieI34
+
+###
+
+### 52. Search my tasks by keyword
+GET http://localhost:8080/api/tasks/my/search?keyword=backend&page=0&size=10
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YTIwMjVAdGVzdC5jb20iLCJpYXQiOjE3NzY5MzkwOTUsImV4cCI6MTc3NzAyNTQ5NX0.A0NwkhJwfYwZFc9A-ximMTCod1xmiHSfpxOafYsXCco
+
+###
+
+### 53. Search with empty keyword — should get 400
+GET http://localhost:8080/api/tasks/search?keyword=&page=0&size=10
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc3NjkzODc3NywiZXhwIjoxNzc3MDI1MTc3fQ.aP50d3xZ1otUV5LxVOQxOPYQihoIAHcDtevGT-ieI34
+
+###
+
+### 54. Create a task due tomorrow — should show HIGH priority in response
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YTIwMjVAdGVzdC5jb20iLCJpYXQiOjE3NzY5MzkwOTUsImV4cCI6MTc3NzAyNTQ5NX0.A0NwkhJwfYwZFc9A-ximMTCod1xmiHSfpxOafYsXCco
+
+{
+  "title": "Urgent task due tomorrow",
+  "description": "This should be escalated to HIGH",
+  "priority": "LOW",
+  "deadline": "2026-04-24"
+}
+
+### =============================================
+### WEEK 6 — BUSINESS LOGIC TESTS
+### =============================================
+
+### 55. Get my upcoming tasks due in next 7 days
+GET http://localhost:8080/api/tasks/my/upcoming?days=7
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YTIwMjVAdGVzdC5jb20iLCJpYXQiOjE3NzY5Mzk5MTMsImV4cCI6MTc3NzAyNjMxM30.C0e4-OLzSHVygu3TaXWnjfij1UhIHXuSRAvfFZTB8mA
+
+###
+
+### 56. Get my upcoming tasks due in next 2 days
+GET http://localhost:8080/api/tasks/my/upcoming?days=2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YTIwMjVAdGVzdC5jb20iLCJpYXQiOjE3NzY5Mzk5MTMsImV4cCI6MTc3NzAyNjMxM30.C0e4-OLzSHVygu3TaXWnjfij1UhIHXuSRAvfFZTB8mA
+
+###
+
+### 57. Get all upcoming tasks — admin
+GET http://localhost:8080/api/tasks/upcoming?days=7
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc3NjkzOTk3MywiZXhwIjoxNzc3MDI2MzczfQ.UrO3XLnTimyhIj0QgdDpttY5zrV4kDZPUZHZnLCSqRQ
+
+###
+
+### 58. Invalid days value — should get 400
+GET http://localhost:8080/api/tasks/upcoming?days=50
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkB0ZXN0LmNvbSIsImlhdCI6MTc3NjkzOTk3MywiZXhwIjoxNzc3MDI2MzczfQ.UrO3XLnTimyhIj0QgdDpttY5zrV4kDZPUZHZnLCSqRQ
+
+###
+
+### 59. Get my personal stats
+GET http://localhost:8080/api/tasks/my/stats
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YTIwMjVAdGVzdC5jb20iLCJpYXQiOjE3NzY5Mzk5MTMsImV4cCI6MTc3NzAyNjMxM30.C0e4-OLzSHVygu3TaXWnjfij1UhIHXuSRAvfFZTB8mA
+
+###
+
+### 60. Get task activity history (use a real task id)
+GET http://localhost:8080/api/tasks/1/activity
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YTIwMjVAdGVzdC5jb20iLCJpYXQiOjE3NzY5Mzk5MTMsImV4cCI6MTc3NzAyNjMxM30.C0e4-OLzSHVygu3TaXWnjfij1UhIHXuSRAvfFZTB8mA
+
+###
+
+### 61. Get activity for non-existent task — should get 404
+GET http://localhost:8080/api/tasks/9999/activity
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YTIwMjVAdGVzdC5jb20iLCJpYXQiOjE3NzY5Mzk5MTMsImV4cCI6MTc3NzAyNjMxM30.C0e4-OLzSHVygu3TaXWnjfij1UhIHXuSRAvfFZTB8mA
+
+### =============================================
+### WEEK 7 — REFRESH TOKEN TESTS
+### =============================================
+
+### Login — response now has accessToken AND refreshToken
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "priya2025@test.com",
+  "password": "Priya123!"
+}
+
+###
+
+### Use refresh token to get new access token
+### Paste the refreshToken value from login response below
+POST http://localhost:8080/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "98e814de-8174-4ce5-9e45-a1f8640e73b4"
+}
+
+###
+
+### Use the same refresh token again — should get 400
+### Because token rotation invalidated it
+POST http://localhost:8080/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "98e814de-8174-4ce5-9e45-a1f8640e73b4"
+}
+
+###
+
+### Logout — invalidates the refresh token
+POST http://localhost:8080/api/auth/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcml5YTIwMjVAdGVzdC5jb20iLCJpYXQiOjE3NzcwOTQwMzksImV4cCI6MTc3NzA5NzYzOX0.dptGtIGg9UWhN5u8yPg6HbbPjk5Ur8cWLRSqAKe3nSQ
+
+###
+
+### Try to refresh after logout — should get 400
+POST http://localhost:8080/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "98e814de-8174-4ce5-9e45-a1f8640e73b4"
+}
+
+###
+
+### Try refresh with a fake token — should get 400
+POST http://localhost:8080/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "this-is-not-a-real-token"
+}
