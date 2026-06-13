@@ -40,22 +40,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // Strip "Bearer " prefix to get the actual token
         String token = authHeader.substring(7);
-        String email = jwtService.extractEmail(token);
+        try {
+            String email = jwtService.extractEmail(token);
+            // If we got an email and no one is authenticated yet for this request
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                var userDetails = userDetailsService.loadUserByUsername(email);
 
-        // If we got an email and no one is authenticated yet for this request
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            var userDetails = userDetailsService.loadUserByUsername(email);
-
-            if (jwtService.isTokenValid(token, userDetails)) {
+                if (jwtService.isTokenValid(token, userDetails)) {
                 // Tell Spring Security this request is authenticated
-                var authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                    var authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+               }
             }
         }
-
-        filterChain.doFilter(request, response);
-    }
+        catch (Exception e) {
+            filterChain.doFilter(request, response);
+            return;
+       } 
 }
