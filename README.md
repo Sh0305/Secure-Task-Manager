@@ -3,7 +3,7 @@
 A production-grade REST API for team task management with JWT authentication,
 role-based access control, and comprehensive audit logging.
 
-Built with Java 24, Spring Boot 3.5, MySQL, and Spring Security.
+Built with Java 17, Spring Boot 3.5, MySQL, and Spring Security.
 
 ---
 
@@ -38,7 +38,7 @@ For production deployment set these as system environment variables or use a sec
 
 | Layer | Technology |
 |---|---|
-| Language | Java 24 |
+| Language | Java 17 |
 | Framework | Spring Boot 3.5 |
 | Security | Spring Security + JWT (jjwt 0.12.6) |
 | Database | MySQL 8 |
