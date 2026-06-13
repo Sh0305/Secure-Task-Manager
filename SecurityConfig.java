@@ -31,7 +31,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 // Register and login are public — no token needed
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
                 // Every other endpoint requires a valid JWT
                 .anyRequest().authenticated()
             )
