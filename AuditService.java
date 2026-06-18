@@ -1,33 +1,34 @@
 package com.securetask.taskmanager.service;
 
-import org.springframework.security.core.context.SecurityContextHolder;
+import java.util.List;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.securetask.taskmanager.model.AuditLog;
-import com.securetask.taskmanager.repository.AuditLogRepository;
+import com.securetask.taskmanager.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuditService {
+public class CustomUserDetailsService implements UserDetailsService {
 
-    private final AuditLogRepository auditLogRepository;
+    private final UserRepository userRepository;
 
-    public void log(String action, String entityType, Long entityId, String details) {
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
-        // Get the logged-in user's email from the JWT token
-        String email = SecurityContextHolder.getContext()
-                .getAuthentication().getName();
-
-        AuditLog log = AuditLog.builder()
-                .action(action)
-                .entityType(entityType)
-                .entityId(entityId)
-                .performedBy(email)
-                .details(details)
-                .build();
-
-        auditLogRepository.save(log);
+        // Converts your User entity into what Spring Security understands
+        // "ROLE_" prefix is required by Spring Security
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+        );
     }
 }
