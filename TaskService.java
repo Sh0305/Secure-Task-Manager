@@ -280,9 +280,6 @@ public PageResponse<TaskResponse> searchMyTasks(String keyword,
     return toPageResponse(results);
 }
 
-    List<TaskResponse> getMyTasks() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     // Admin — all tasks due within next N days
 public PageResponse<TaskResponse> getUpcomingTasks(int days,
@@ -361,4 +358,8 @@ public List<AuditLog> getTaskActivity(Long taskId) {
     return auditLogRepository.findByEntityTypeAndEntityIdOrderByPerformedAtDesc(
                     "TASK", taskId);
 }
+
+    public List<TaskResponse> getMyTasks() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
