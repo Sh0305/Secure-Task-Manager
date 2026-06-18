@@ -1,4 +1,4 @@
-package com.securetask.taskmanager.service;
+package com.securetask.taskmanager;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +30,9 @@ import com.securetask.taskmanager.dto.RegisterRequest;
 import com.securetask.taskmanager.exception.DuplicateResourceException;
 import com.securetask.taskmanager.model.User;
 import com.securetask.taskmanager.repository.UserRepository;
+import com.securetask.taskmanager.service.CustomUserDetailsService;
+import com.securetask.taskmanager.service.JwtService;
+import com.securetask.taskmanager.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
